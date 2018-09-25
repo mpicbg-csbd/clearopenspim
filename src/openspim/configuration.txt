@@ -1,0 +1,173 @@
+#RTlib machine configuration file
+
+lookandfeel = metal
+
+clearcl.device.fusion = TITAN 
+
+device.serial.laser.omicron.0=COM4
+device.serial.laser.cobolt.1=COM8
+
+#For Nikon 40x 0.8 NA
+#device.camera0.pixelsizenm  = 162.5
+#device.camera1.pixelsizenm  = 162.5
+
+#For Nikon 25x 1.1 NA
+device.camera0.pixelsizenm  = 260
+device.camera1.pixelsizenm  = 260
+
+
+device.lsm.detection.D0.z.index = 0
+device.lsm.detection.D1.z.index = 1
+
+
+device.lsm.lightsheet.I0.x.index  = 2
+device.lsm.lightsheet.I0.y.index  = 3
+device.lsm.lightsheet.I0.z.index  = 4
+device.lsm.lightsheet.I0.b.index  = 5
+device.lsm.lightsheet.I0.w.index  = 6
+device.lsm.lightsheet.I0.la.index = 7
+device.lsm.lightsheet.I0.t.index  = 15
+
+device.lsm.lightsheet.I1.x.index  = 2
+device.lsm.lightsheet.I1.y.index  = 3
+device.lsm.lightsheet.I1.z.index  = 4
+device.lsm.lightsheet.I1.b.index  = 5
+device.lsm.lightsheet.I1.w.index  = 6
+device.lsm.lightsheet.I1.la.index = 7
+device.lsm.lightsheet.I1.t.index  = 15
+
+device.lsm.lightsheet.I2.x.index  = 2
+device.lsm.lightsheet.I2.y.index  = 3
+device.lsm.lightsheet.I2.z.index  = 4
+device.lsm.lightsheet.I2.b.index  = 5
+device.lsm.lightsheet.I2.w.index  = 6
+device.lsm.lightsheet.I2.la.index = 7
+device.lsm.lightsheet.I2.t.index  = 15
+
+device.lsm.lightsheet.I3.x.index  = 2
+device.lsm.lightsheet.I3.y.index  = 3
+device.lsm.lightsheet.I3.z.index  = 4
+device.lsm.lightsheet.I3.b.index  = 5
+device.lsm.lightsheet.I3.w.index  = 6
+device.lsm.lightsheet.I3.la.index = 7
+device.lsm.lightsheet.I3.t.index  = 15
+
+device.lsm.lightsheet.I0.ld0.index = 8
+device.lsm.lightsheet.I0.ld1.index = 9
+device.lsm.lightsheet.I1.ld0.index = 8
+device.lsm.lightsheet.I1.ld1.index = 9
+device.lsm.lightsheet.I2.ld0.index = 8
+device.lsm.lightsheet.I2.ld1.index = 9
+device.lsm.lightsheet.I3.ld0.index = 8
+device.lsm.lightsheet.I3.ld1.index = 9
+
+device.lsm.switch.OpticalSwitch0.index = 10
+device.lsm.switch.OpticalSwitch1.index = 11
+device.lsm.switch.OpticalSwitch2.index = 12
+device.lsm.switch.OpticalSwitch3.index = 13
+
+
+# Bounds:
+
+device.lsm.detection.D0.z.bounds = {"min":0, "max":1 }
+device.lsm.detection.D1.z.bounds = {"min":0, "max":1 }
+
+device.lsm.lighsheet.I0.x.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I0.y.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I0.z.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I0.w.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I0.h.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I0.a.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I0.b.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I0.p.bounds = {"min":0, "max":0.5 }
+device.lsm.lighsheet.I0.wp.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I0.hp.bounds = {"min":-1, "max":1 }
+
+device.lsm.lighsheet.I1.x.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I1.y.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I1.z.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I1.w.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I1.h.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I1.a.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I1.b.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I1.p.bounds = {"min":0, "max":0.5 }
+device.lsm.lighsheet.I1.wp.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I1.hp.bounds = {"min":-1, "max":1 }
+
+device.lsm.lighsheet.I2.x.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I2.y.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I2.z.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I2.w.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I2.h.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I2.a.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I2.b.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I2.p.bounds = {"min":0, "max":0.5 }
+device.lsm.lighsheet.I2.wp.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I2.hp.bounds = {"min":-1, "max":1 }
+
+device.lsm.lighsheet.I3.x.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I3.y.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I3.z.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I3.w.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I3.h.bounds = {"min":0, "max":1 }
+device.lsm.lighsheet.I3.a.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I3.b.bounds = {"min":-90, "max":90 }
+device.lsm.lighsheet.I3.p.bounds = {"min":0, "max":0.5 }
+device.lsm.lighsheet.I3.wp.bounds = {"min":-1, "max":1 }
+device.lsm.lighsheet.I3.hp.bounds = {"min":-1, "max":1 }
+
+
+
+# Functions:
+
+device.lsm.detection.D0.z.f = {"a":1,"b":0 }
+device.lsm.detection.D1.z.f = {"a":1,"b":0 }
+
+
+#device.lsm.detection.D0.z.f = {"a":-0.00264061262,"b":0.5 }
+#device.lsm.detection.D1.z.f = {"a":0.00256871307,"b":0.5 }
+
+device.lsm.lighsheet.I0.x.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.y.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.z.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.w.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.h.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.a.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.b.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I0.p.f = {"a":0.5,"b":0 }
+device.lsm.lighsheet.I0.wp.f = {"a":0,"b":0 }
+device.lsm.lighsheet.I0.hp.f = {"a":0,"b":0 }
+
+device.lsm.lighsheet.I1.x.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.y.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.z.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.w.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.h.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.a.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.b.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I1.p.f = {"a":0.5,"b":0 }
+device.lsm.lighsheet.I1.wp.f = {"a":0,"b":0 }
+device.lsm.lighsheet.I1.hp.f = {"a":0,"b":0 }
+
+device.lsm.lighsheet.I2.x.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.y.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.z.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.w.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.h.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.a.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.b.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I2.p.f = {"a":0.5,"b":0 }
+device.lsm.lighsheet.I2.wp.f = {"a":0,"b":0 }
+device.lsm.lighsheet.I2.hp.f = {"a":0,"b":0 }
+
+device.lsm.lighsheet.I3.x.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.y.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.z.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.w.f = {"a":1,"b":0}
+device.lsm.lighsheet.I3.h.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.a.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.b.f = {"a":1,"b":0 }
+device.lsm.lighsheet.I3.p.f = {"a":0.5,"b":0 }
+device.lsm.lighsheet.I3.wp.f = {"a":0,"b":0 }
+device.lsm.lighsheet.I3.hp.f = {"a":0,"b":0 }
+
