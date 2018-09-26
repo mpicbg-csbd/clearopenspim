@@ -6,34 +6,35 @@ import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.stages.BasicStageInterface;
 import clearcontrol.gui.jfx.custom.visualconsole.VisualConsoleInterface;
 import pi4dusb.PiUsbLinearStage;
+import pi4dusb.PiUsbTwisterStage;
 
 /**
- * LinearPicardStage
+ * TwisterPicardStage
  * <p>
  * <p>
  * <p>
  * Author: @haesleinhuepf
  * 09 2018
  */
-public class LinearPicardStage  extends VirtualDevice implements
+public class TwisterPicardStage extends VirtualDevice implements
         VisualConsoleInterface,
         LoggingFeature,
         BasicStageInterface
 {
-    Variable<Double> position = new Variable<Double>("Position (micron)", 0.0);
+    Variable<Double> position = new Variable<Double>("Position (deg)", 0.0);
 
     int serial = 0;
-    double stepDistance = 1.524; // microns according to manual
+    double stepDistance = 1.8; // degrees according to manual
 
-    PiUsbLinearStage piStage;
+    PiUsbTwisterStage piStage;
 
-    public LinearPicardStage(String pDeviceName, int serial, double stepDistance) {
+    public TwisterPicardStage(String pDeviceName, int serial, double stepDistance) {
         super(pDeviceName);
         this.serial = serial;
         this.stepDistance = stepDistance;
     }
 
-    public LinearPicardStage(String pDeviceName, int serial) {
+    public TwisterPicardStage(String pDeviceName, int serial) {
         super(pDeviceName);
         this.serial = serial;
     }
@@ -43,7 +44,7 @@ public class LinearPicardStage  extends VirtualDevice implements
     public boolean open() {
         super.open();
 
-        piStage = new PiUsbLinearStage(serial);
+        piStage = new PiUsbTwisterStage(serial);
         return true;
     }
 

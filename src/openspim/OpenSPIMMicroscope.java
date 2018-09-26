@@ -14,6 +14,7 @@ import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpti
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
+import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
 
 /**
  * OpenSPIM microscope assembly
@@ -72,9 +73,10 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
 
     // Setting up stages:
     {
-      addDevice(0, new LinearPicardStage("X", 1));
-      addDevice(0, new LinearPicardStage("Y", 1));
-      addDevice(0, new LinearPicardStage("Z", 1));
+      addDevice(0, new LinearPicardStage("X", 122));
+      addDevice(0, new LinearPicardStage("Y", 123));
+      addDevice(0, new LinearPicardStage("Z", 121));
+      addDevice(0, new TwisterPicardStage("R", 28));
     }
 
     // Setting up cameras:
