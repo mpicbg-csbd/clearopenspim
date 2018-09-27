@@ -2,11 +2,20 @@
 package openspim;
 
 import clearcl.ClearCLContext;
+import clearcontrol.core.variable.Variable;
 import clearcontrol.devices.cameras.StackCameraDeviceInterface;
 import clearcontrol.devices.cameras.devices.hamamatsu.HamStackCamera;
+import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
+import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
+import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
+import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
 import clearcontrol.devices.lasers.instructions.*;
+import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
+import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
+import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
 import clearcontrol.microscope.lightsheet.DefaultLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -15,6 +24,8 @@ import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDev
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
 import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
+
+import java.util.ArrayList;
 
 /**
  * OpenSPIM microscope assembly
@@ -54,15 +65,23 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
    *          number of lightsheets
    */
   public void addRealHardwareDevices(int numberOfDetectionArms,
-                                     int numberOfLightSheets)
+                                     int numberOfLightSheets,
+                                     LightSheetMicroscopeSimulationDevice pSimulatorDevice)
   {
     long defaultStackWidth = 512;
     long defaultStackHeight = 512;
 
 
     // Setting up lasers:
+    //if (false)
     {
-      final OmicronLaserDevice laser488 = new OmicronLaserDevice(0);
+      //final OmicronLaserDevice laser488 = new OmicronLaserDevice(0);
+      LaserDeviceInterface laser488 =
+              new LaserDeviceSimulator("Laser 488 sim",
+                      0,
+                      488,
+                      100);
+
       addDevice(0, laser488);
       addDevice(0, new SwitchLaserOnOffInstruction(laser488, true));
       addDevice(0, new SwitchLaserOnOffInstruction(laser488, false));
@@ -162,6 +181,153 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
                                                                                    numberOfLightSheets);
       addDevice(0, lightSheetOpticalSwitch);
     }
+
+
+    // ----------------------------------------------
+    // add simulated devices to the real hardware scope
+
+    int lNumberOfDetectionArms = numberOfDetectionArms;
+    int lNumberOfLightSheets = numberOfLightSheets;
+    boolean pSharedLightSheetControl = true;
+    boolean pDummySimulation = true;
+
+
+    // Setting up trigger:
+
+    Variable<Boolean> lTrigger =
+            new Variable<Boolean>("CameraTrigger",
+                    false);
+
+    ArrayList<StackCameraDeviceSimulator> lCameraList =
+            new ArrayList<>();
+
+    // Setting up cameras:
+    {
+
+      for (int c = 0; c < lNumberOfDetectionArms; c++)
+      {
+        final StackCameraDeviceSimulator lCamera =
+                new StackCameraDeviceSimulator("StackCamera"
+                        + c,
+                        lTrigger);
+
+        long lMaxWidth = pSimulatorDevice.getSimulator()
+                .getCameraRenderer(c)
+                .getMaxWidth();
+
+        long lMaxHeight = pSimulatorDevice.getSimulator()
+                .getCameraRenderer(c)
+                .getMaxHeight();
+
+        lCamera.getMaxWidthVariable().set(lMaxWidth);
+        lCamera.getMaxHeightVariable().set(lMaxHeight);
+        lCamera.getStackWidthVariable().set(lMaxWidth / 2);
+        lCamera.getStackHeightVariable().set(lMaxHeight);
+        lCamera.getExposureInSecondsVariable().set(0.010);
+
+        // lCamera.getStackVariable().addSetListener((o,n)->
+        // {System.out.println("camera output:"+n);} );
+
+        addDevice(c, lCamera);
+
+        lCameraList.add(lCamera);
+      }
+    }
+
+    // Scaling Amplifier:
+    {
+      ScalingAmplifierDeviceInterface lScalingAmplifier1 =
+              new ScalingAmplifierSimulator("ScalingAmplifier1");
+      addDevice(0, lScalingAmplifier1);
+
+      ScalingAmplifierDeviceInterface lScalingAmplifier2 =
+              new ScalingAmplifierSimulator("ScalingAmplifier2");
+      addDevice(1, lScalingAmplifier2);
+    }
+
+    // Signal generator:
+
+    {
+      SignalGeneratorSimulatorDevice lSignalGeneratorSimulatorDevice =
+              new SignalGeneratorSimulatorDevice();
+
+      // addDevice(0, lSignalGeneratorSimulatorDevice);
+      lSignalGeneratorSimulatorDevice.getTriggerVariable()
+              .sendUpdatesTo(lTrigger);/**/
+
+      final LightSheetSignalGeneratorDevice lLightSheetSignalGeneratorDevice =
+              LightSheetSignalGeneratorDevice.wrap(lSignalGeneratorSimulatorDevice,
+                      pSharedLightSheetControl);
+
+      addDevice(0, lLightSheetSignalGeneratorDevice);
+    }
+
+    // setting up staging score visualization:
+
+    /*final ScoreVisualizerJFrame lVisualizer = ScoreVisualizerJFrame.visualize("LightSheetDemo",
+                                                                              lStagingScore);/**/
+
+    // Setting up detection arms:
+
+    {
+      for (int c = 0; c < lNumberOfDetectionArms; c++)
+      {
+        final DetectionArm lDetectionArm = new DetectionArm("D" + c);
+        lDetectionArm.getPixelSizeInMicrometerVariable()
+                .set(pSimulatorDevice.getSimulator()
+                        .getPixelWidth(c));
+
+        addDevice(c, lDetectionArm);
+      }
+    }
+
+    // Setting up lightsheets:
+    {
+      for (int l = 0; l < lNumberOfLightSheets; l++)
+      {
+        final LightSheet lLightSheet =
+                new LightSheet("I" + l,
+                        9.4,
+                        getNumberOfLaserLines());
+        addDevice(l, lLightSheet);
+
+      }
+    }
+
+    // Setting up lightsheets selector
+    {
+      LightSheetOpticalSwitch lLightSheetOpticalSwitch =
+              new LightSheetOpticalSwitch("OpticalSwitch",
+                      lNumberOfLightSheets);
+
+      addDevice(0, lLightSheetOpticalSwitch);
+    }
+
+    // Setting up simulator:
+    {
+      // Now that the microscope has been setup, we can connect the simulator to
+      // it:
+
+      // first, we connect the devices in the simulator so that parameter
+      // changes
+      // are forwarded:
+      pSimulatorDevice.connectTo(this);
+
+      // second, we make sure that the simulator is used as provider for the
+      // simulated cameras:
+      for (int c = 0; c < lNumberOfDetectionArms; c++)
+      {
+        StackCameraSimulationProvider lStackProvider;
+        if (pDummySimulation)
+          lStackProvider = new FractalStackProvider();
+        else
+          lStackProvider = pSimulatorDevice.getStackProvider(c);
+        lCameraList.get(c)
+                .setStackCameraSimulationProvider(lStackProvider);
+      }
+    }
+
+
 
   }
 

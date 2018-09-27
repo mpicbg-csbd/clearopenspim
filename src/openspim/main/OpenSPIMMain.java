@@ -225,8 +225,27 @@ public class OpenSPIMMain extends Application implements LoggingFeature
       }
       else
       {
+        ClearCLContext
+                simulationContext =
+                clearCL.getDeviceByName(sMachineConfiguration.getStringProperty(
+                        "clearcl.device.simulation",
+                        "HD")).createContext();
+
+        LightSheetMicroscopeSimulationDevice
+                simulatorDevice =
+                SimulationUtils.getSimulatorDevice(simulationContext,
+                        numberOfDetectionArms,
+                        numberOfLightSheets,
+                        2048,
+                        11,
+                        320,
+                        320,
+                        320,
+                        false);
+
         openSpimMicroscope.addRealHardwareDevices(numberOfDetectionArms,
-                                                numberOfLightSheets);
+                                                numberOfLightSheets,
+                                                simulatorDevice);
       }
       openSpimMicroscope.addStandardDevices(numberOfControlPlanes);
 
