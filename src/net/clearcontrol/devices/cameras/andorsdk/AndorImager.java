@@ -91,129 +91,122 @@ public class AndorImager extends VirtualDevice {
         if (lCamera == null) {
             return false;
         }
-        /*try {
 
-         */
         try {
             lCamera.startAcquisition();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-            ScheduledThreadPoolExecutor lExecutor = new ScheduledThreadPoolExecutor(20);
+        ScheduledThreadPoolExecutor lExecutor = new ScheduledThreadPoolExecutor(20);
 
-            int lNumTimePoints = 1;
-            double t0 = System.nanoTime();
+        int lNumTimePoints = 1;
+        double t0 = System.nanoTime();
 
-            double t11;
-
-
-            Future<?> f = lExecutor.scheduleAtFixedRate(() -> {
-                try {
+        double t11;
 
 
-
-                    lCamera.SoftwareTrigger();
-
-
-                    double t1 = System.nanoTime();
-                    System.out.println(String.format("---> Trigger: %.3f", (t1 - t0) * 1e-6));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }, 0, 100, TimeUnit.MILLISECONDS);
-
-            System.out.println();
+        Future<?> f = lExecutor.scheduleAtFixedRate(() -> {
+            try {
 
 
-            for (int i = 0; i < lNumTimePoints; i++) {
-                int ind = i;
+
+                lCamera.SoftwareTrigger();
 
 
                 double t1 = System.nanoTime();
+                System.out.println(String.format("---> Trigger: %.3f", (t1 - t0) * 1e-6));
 
-                ImageBuffer lImageBuffer = null;
-                try {
-                    lImageBuffer = lCamera.waitForBuffer(10, TimeUnit.SECONDS);
-                } catch (AndorSdkJException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-
-
-                double t25 = System.nanoTime();
-
-
-                System.out.println(String.format("Wait for buffer %d took %.3f ms.", i, (t25 - t1) * 1e-6));
-                try{
-                    lCamera.enqueueBuffer(lImageBuffer);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-
-                System.out.println("Buffer received with " + lImageBuffer.getImageSizeInBytes() + " bytes");
-
-                //lImageBuffer.getPointer();
-                int[][] array = Buffer16ToArray.toArray(lImageBuffer, imageWidth, imageHeight);
-                //int[][][] enclosedArray = new int[][][]{array};
-
-                char[][][] charArray = new char[1][][];
-                int z = 0;
-                charArray[z] = new char[array.length][];
-                for (int y = 0; y < charArray[z].length; y++) {
-                    charArray[z][y] = new char[array[0].length];
-                    for (int x = 0; x < charArray[z][y].length; x++) {
-                        charArray[z][y][x] = (char) array[y][x];
-                    }
-                }
-
-
-                ClearCLIJ clij = ClearCLIJ.getInstance();
-
-                lastAcquiredImage = clij.converter(charArray).getClearCLImage();
-                clij.show(lastAcquiredImage, "acq");
-
-                ClearCLImage sliceImage = clij.createCLImage(new long[] {lastAcquiredImage.getWidth(), lastAcquiredImage.getHeight()}, lastAcquiredImage.getChannelDataType());
-                Kernels.copySlice(clij, lastAcquiredImage, sliceImage, 0);
-                lastAcquiredImage.close();
-                lastAcquiredImage = sliceImage;
-                //ClearCLImage image = clij.createCLImage(new long[]{1024, 1024}, ImageChannelDataType.UnsignedInt16);
-
-                //StackInterface stack = clij.converter(image).getStack();
-                //ByteBuffer buffer = ByteBuffer.allocate(lImageBuffer.getImageSizeInBytes());
-
-
-                //stack.getContiguousMemory().copyFrom(lImageBuffer.getPointer());
-
-                //lastAcquiredImage.readFrom(lImageBuffer.getPointer(), true);
-
-                System.out.println();
-            }
-
-
-            double t2 = System.nanoTime();
-            f.cancel(false);
-
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            lExecutor.shutdownNow();
+        }, 0, 100, TimeUnit.MILLISECONDS);
 
+        System.out.println();
+
+
+        for (int i = 0; i < lNumTimePoints; i++) {
+            int ind = i;
+
+
+            double t1 = System.nanoTime();
+
+
+            // wait for / re
+            ImageBuffer lImageBuffer = null;
             try {
-                lCamera.stopAcquisition();
+                lImageBuffer = lCamera.waitForBuffer(10, TimeUnit.SECONDS);
+            } catch (AndorSdkJException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+
+            double t25 = System.nanoTime();
+
+
+            System.out.println(String.format("Wait for buffer %d took %.3f ms.", i, (t25 - t1) * 1e-6));
+            try{
+                lCamera.enqueueBuffer(lImageBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
-            /*} catch (Exception e) {
+
+            System.out.println("Buffer received with " + lImageBuffer.getImageSizeInBytes() + " bytes");
+
+
+            ClearCLIJ clij = ClearCLIJ.getInstance();
+            ClearCLImage clImage = clij.createCLImage(new long[]{imageWidth + 1, imageHeight}, ImageChannelDataType.UnsignedInt16);
+
+            clImage.readFrom(lImageBuffer.getPointer().getBytes(), true);
+
+            /*
+            // Convert from ImageBuffer to int[][]
+            int[][] array = Buffer16ToArray.toArray(lImageBuffer, imageWidth, imageHeight);
+
+            // CLIJ cannot convert from int[][] to ClearCLImage, we need to convert it to char[][][]
+            char[][][] charArray = new char[1][][];
+            int z = 0;
+            charArray[z] = new char[array.length][];
+            for (int y = 0; y < charArray[z].length; y++) {
+                charArray[z][y] = new char[array[0].length];
+                for (int x = 0; x < charArray[z][y].length; x++) {
+                    charArray[z][y][x] = (char) array[y][x];
+                }
+            }
+
+            // Convert from char[][][] to ClearCLImage
+            ClearCLIJ clij = ClearCLIJ.getInstance();
+            lastAcquiredImage = clij.converter(charArray).getClearCLImage();
+            clij.show(lastAcquiredImage, "acq");
+            ClearCLImage sliceImage = clij.createCLImage(new long[] {lastAcquiredImage.getWidth(), lastAcquiredImage.getHeight()}, lastAcquiredImage.getChannelDataType());
+            Kernels.copySlice(clij, lastAcquiredImage, sliceImage, 0);
+            lastAcquiredImage.close();
+            lastAcquiredImage = sliceImage;
+            */
+            System.out.println();
+        }
+
+
+        double t2 = System.nanoTime();
+        f.cancel(false);
+
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        lExecutor.shutdownNow();
+
+        try {
+            lCamera.stopAcquisition();
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }*/
+        }
+
         return true;
     }
 
