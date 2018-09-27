@@ -9,7 +9,6 @@ import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.devices.lasers.devices.omicron.OmicronLaserDevice;
 import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
 import clearcontrol.devices.lasers.instructions.*;
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
@@ -22,8 +21,10 @@ import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
+import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
 import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
+import openspim.imaging.StageMotionAcquisitionWithAndorSDKImagingInstruction;
 
 import java.util.ArrayList;
 
@@ -66,8 +67,7 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
    */
   public void addRealHardwareDevices(int numberOfDetectionArms,
                                      int numberOfLightSheets,
-                                     LightSheetMicroscopeSimulationDevice pSimulatorDevice)
-  {
+                                     LightSheetMicroscopeSimulationDevice pSimulatorDevice) {
     long defaultStackWidth = 512;
     long defaultStackHeight = 512;
 
@@ -88,6 +88,12 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
       addDevice(0, new SwitchLaserPowerOnOffInstruction(laser488, true));
       addDevice(0, new SwitchLaserPowerOnOffInstruction(laser488, false));
       addDevice(0, new ChangeLaserPowerInstruction(laser488));
+    }
+
+    // setting up cameras
+    {
+      addDevice(0, new AndorImager(0));
+      addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));
     }
 
     // Setting up stages:

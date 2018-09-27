@@ -75,6 +75,8 @@ dependencies
 {
     compile 'net.imglib2:imglib2:4.6.1'
 
+    compile ('andor:andorsdkj:0.2.2') {transitive= true; changing= true}
+
     compile ('net.clearcontrol:picard4dusbstage:0.0.1') {transitive= true; changing= true}
 
     // SpimCAT:

@@ -1,5 +1,6 @@
 package openspim.main;
 
+import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +14,8 @@ import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import clearcontrol.microscope.lightsheet.simulation.SimulationUtils;
+import clearcontrol.microscope.lightsheet.timelapse.io.ScheduleReader;
+import clearcontrol.microscope.lightsheet.timelapse.test.ScheduleIOTest;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -248,6 +251,14 @@ public class OpenSPIMMain extends Application implements LoggingFeature
                                                 simulatorDevice);
       }
       openSpimMicroscope.addStandardDevices(numberOfControlPlanes);
+
+      // -------------------------------------------------------------------
+      // load the default program
+      openSpimMicroscope.getTimelapse().getCurrentProgram().clear();
+      File file = new File("C:\\Users\\openspim\\.clearcontrol\\ProgramTemplates\\open_spim_with_andor.txt");
+      ScheduleReader reader = new ScheduleReader(openSpimMicroscope.getTimelapse().getCurrentProgram(), openSpimMicroscope, file);
+      reader.read();
+      // -------------------------------------------------------------------
 
       info("Opening microscope devices...");
       if (openSpimMicroscope.open())
