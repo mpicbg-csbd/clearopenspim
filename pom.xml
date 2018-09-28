@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.clearcontrol</groupId>
+		<artifactId>ClearParentPom</artifactId>
+		<version>0.6.8</version>
+		<relativePath />
+	</parent>
+
+	<groupId>net.clearcontrol</groupId>
+	<artifactId>ClearOpenSPIM</artifactId>
+	<version>0.0.2-m</version>
+
+	<name>ClearOpenSPIM</name>
+	<description>ClearOpenSPIM</description>
+	<url>https://github.com/ClearControl/ClearControl</url>
+	<inceptionYear>2018</inceptionYear>
+	<organization>
+		<name>ClearControl</name>
+		<url>http://clearcontrol.net</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>royer</id>
+			<name>Loic A. Royer</name>
+			<organization>CZ Biohub</organization>
+			<roles>
+				<role>founder</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>haesleinhuepf</id>
+			<name>Robert Haase</name>
+			<url>https://haesleinhuepf.net</url>
+			<organization>MPI CBG</organization>
+			<roles>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<contributor>
+			<name>none</name>
+		</contributor>
+	</contributors>
+
+	<scm>
+		<connection>scm:git:git://github.com/ClearControl/ClearControl</connection>
+        <developerConnection>scm:git:git@github.com/ClearControl/ClearControl</developerConnection>
+        <tag>HEAD</tag>
+		<url>https://github.com/ClearControl/ClearControl</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/ClearControl/ClearControl/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<properties>
+		<package-name>net.clearcontrol</package-name>
+		<imagej.app.directory>C:/Programs/Fiji.app/</imagej.app.directory>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.clearcontrol</groupId>
+			<artifactId>clearcontrol-lightsheet-csbd</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.clearcontrol</groupId>
+			<artifactId>picard4dusbstage</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>andor</groupId>
+			<artifactId>andorsdkj</artifactId>
+		</dependency>
+
+	</dependencies>
+
+
+
+</project>
