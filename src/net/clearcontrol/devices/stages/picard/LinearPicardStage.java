@@ -23,7 +23,7 @@ public class LinearPicardStage  extends VirtualDevice implements
     Variable<Double> position = new Variable<Double>("Position (micron)", 0.0);
 
     int serial = 0;
-    double stepDistance = 1.524; // microns according to manual
+    double stepDistance = 0.001524; // millimetres according to manual
 
     PiUsbLinearStage piStage;
 
