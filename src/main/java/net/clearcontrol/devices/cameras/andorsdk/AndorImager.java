@@ -58,7 +58,9 @@ public class AndorImager extends VirtualDevice {
 
     public ClearCLImage acquire() {
         lastAcquiredImage = null;
+        //open();
         image();
+        //close();
         return lastAcquiredImage;
     }
 
@@ -157,9 +159,30 @@ public class AndorImager extends VirtualDevice {
 
 
             ClearCLIJ clij = ClearCLIJ.getInstance();
-            ClearCLImage clImage = clij.createCLImage(new long[]{imageWidth + 1, imageHeight}, ImageChannelDataType.UnsignedInt16);
+            ClearCLImage clByteImage = clij.createCLImage(new long[]{imageWidth, imageHeight}, ImageChannelDataType.UnsignedInt16);
 
-            clImage.readFrom(lImageBuffer.getPointer().getBytes(), true);
+            byte[] bytes = lImageBuffer.getPointer().getBytes(lImageBuffer.getImageSizeInBytes());
+
+            int numberOfPytesPerPixel = 2;
+            byte[] filteredBytes = new byte[imageWidth * imageHeight * numberOfPytesPerPixel];
+
+            int targetAdress = 0;
+            for (int j = 0; j < bytes.length; j++) {
+                if ((j+1)%(imageWidth+1) != 0) {
+                    filteredBytes[targetAdress] = bytes[j];
+                    targetAdress++;
+                }
+            }
+
+            System.out.println("Read bytes: " + lImageBuffer.getImageSizeInBytes());
+            System.out.println("Avail mem:  " + clByteImage.getSizeInBytes());
+            System.out.println("bytes    :  " + bytes.length);
+            System.out.println("filtere  :  " + filteredBytes.length);
+
+            clByteImage.readFrom(filteredBytes, true);
+
+            lastAcquiredImage = clByteImage;
+
 
             /*
             // Convert from ImageBuffer to int[][]
