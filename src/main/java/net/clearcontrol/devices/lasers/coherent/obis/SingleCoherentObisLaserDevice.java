@@ -1,11 +1,13 @@
 package net.clearcontrol.devices.lasers.coherent.obis;
 
+import clearcontrol.com.serial.Serial;
 import clearcontrol.com.serial.SerialDevice;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
 import clearcontrol.devices.lasers.LaserDeviceBase;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
+import jssc.SerialPort;
 import jssc.SerialPortException;
 
 /**
@@ -33,7 +35,7 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
     final static String MAX_POWER_TOKEN = ("SOUR1:POW:LIM:HIGH");
     final static String MIN_POWER_TOKEN = ("SOUR1:POW:LIM:LOW");
 
-    private SerialDevice mSerialDevice;
+    //private SerialDevice mSerialDevice;
     private boolean connected = false;
 
     public SingleCoherentObisLaserDevice(String serialPort, int baudRate, int wavelength) {
@@ -58,7 +60,7 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
         });
 
         super.mWavelengthVariable = new BoundedVariable<Integer>("Wavelength in nm", wavelength, 0, Integer.MAX_VALUE);
-        mSerialDevice = new SerialDevice("Serial laser " + getName(), serialPort, baudRate);
+        //mSerialDevice = new SerialDevice("Serial laser " + getName(), serialPort, baudRate);
     }
 
     @Override
@@ -75,6 +77,9 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
     // high level API
 
     private boolean connect() {
+        //mSerialDevice.getSerial().setLineTerminationCharacter('\n');
+        //mSerialDevice.open();
+        purge();
 
         setLaserProperty("SYST1:COMM:HAND","On");
         setLaserProperty("SYST1:COMM:PROM","Off");
@@ -86,12 +91,23 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
         return connected;
     }
 
+    private void purge() {
+        /*Serial pSerial = mSerialDevice.getSerial();
+        pSerial.setMessageLength(100);
+        pSerial.readBinaryMessage(100);
+        try {
+            pSerial.purge();
+        } catch (SerialPortException e) {
+            e.printStackTrace();
+        }*/
+    }
+
     private boolean disconnect() {
         if (!connected) {
             return false;
         }
         turnLaser(false);
-        mSerialDevice.close();
+        //mSerialDevice.close();
         return true;
     }
 
@@ -120,20 +136,46 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
     // low level API
 
     private String send(String message) {
+        SerialPort serialPort = new SerialPort("COM3");
+        try {
+            serialPort.openPort();//Open serial port
+            serialPort.setParams(SerialPort.BAUDRATE_115200,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
+            serialPort.writeBytes((message + "\r").getBytes());//Write data to port
+            System.out.print(message.replace('\r', ' ').trim() + " --> ");
+
+            StringBuilder b = new StringBuilder();
+            byte last;
+            do {
+                String ret = serialPort.readString(1);
+                b.append(ret);
+                last = ret.getBytes()[0];
+            } while(last != '\n');
+            System.out.println(b.toString().trim());
+            serialPort.closePort();//Close serial port
+            return b.toString();
+        }
+        catch (SerialPortException ex) {
+            System.out.println(ex);
+            return null;
+        }
+        /*
         try
         {
-            // System.out.print(pCommandString.replace('\r', ' ').trim() + " --> ");
+            System.out.print(message.replace('\r', ' ').trim() + " --> ");
             String lAnswer =
                     mSerialDevice.getSerial()
-                            .writeStringAndGetAnswer(message);
-            // System.out.println(lAnswer.trim());
+                            .writeStringAndGetAnswer(message + "\n");
+            System.out.println(lAnswer.trim());
             return lAnswer;
         }
         catch (SerialPortException e)
         {
             e.printStackTrace();
             return null;
-        }
+        }*/
     }
 
     private String setLaserProperty(String property, String value) {

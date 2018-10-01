@@ -14,7 +14,7 @@ public class SingleCoherentObisLaserDemo {
 
 
     public static void main(String... args) throws InterruptedException {
-        SingleCoherentObisLaserDevice laser = new SingleCoherentObisLaserDevice("COM8", 115200, 488);
+        SingleCoherentObisLaserDevice laser = new SingleCoherentObisLaserDevice("COM3", 115200, 488);
         laser.start();
 
         laser.getTargetPowerInMilliWattVariable().set(10);
