@@ -31,7 +31,7 @@ import openspim.OpenSPIMMicroscope;
 import openspim.gui.OpenSPIMGui;
 
 /**
- * Xwing main class
+ * OpenSpim main
  *
  * @author haesleinhuepf
  */
@@ -269,7 +269,7 @@ public class OpenSPIMMain extends Application implements LoggingFeature
           if (jfxPrimaryStage != null)
           {
 
-            info("Setting up XWing GUI...");
+            info("Setting up OpenSPIM GUI...");
             OpenSPIMGui openSpimGui =
                 new OpenSPIMGui(openSpimMicroscope,
                              jfxPrimaryStage,
@@ -285,7 +285,7 @@ public class OpenSPIMMain extends Application implements LoggingFeature
             openSpimGui.waitForVisible(false, null, null);
 
             openSpimGui.disconnectGUI();
-            info("Closing XWing GUI...");
+            info("Closing OpenSPIM GUI...");
             openSpimGui.close();
 
             info("Stopping microscope devices...");
