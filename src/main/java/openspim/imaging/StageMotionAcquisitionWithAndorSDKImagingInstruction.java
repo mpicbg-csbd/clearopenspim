@@ -18,6 +18,7 @@ public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageM
     @Override
     protected ClearCLImage acquireSinglePlane(double z) {
         AndorImager imager = getLightSheetMicroscope().getDevice(AndorImager.class, 0);
+        imager.setExposureTimeInSeconds(getExposureTimeInSeconds().get());
         return imager.acquire();
     }
 

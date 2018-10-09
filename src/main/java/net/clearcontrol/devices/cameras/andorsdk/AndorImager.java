@@ -31,6 +31,7 @@ public class AndorImager extends VirtualDevice {
 
     int imageWidth = 2560;
     int imageHeight = 2160;
+    double exposureInSeconds = 0.1;
 
     public AndorImager(int cameraIndex) {
         super("Andor imager");
@@ -42,6 +43,10 @@ public class AndorImager extends VirtualDevice {
 
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
+    }
+    public AndorImager(int cameraIndex, int imageWidth, int imageHeight, double exposureInSeconds) {
+        this(cameraIndex, imageWidth, imageHeight);
+        this.exposureInSeconds = exposureInSeconds;
     }
 
     @Override
@@ -76,7 +81,7 @@ public class AndorImager extends VirtualDevice {
             lCamera.setReadoutRate(ReadOutRate._280_MHz);
             lCamera.allocateAndQueueAlignedBuffers(5);
             lCamera.setTriggeringMode(TriggerMode.SOFTWARE);
-            lCamera.setExposureTimeInSeconds(0.1);
+            lCamera.setExposureTimeInSeconds(exposureInSeconds);
             lCamera.setCycleMode(CycleMode.CONTINUOUS);
 
             System.out.println("is overlap? - " + lCamera.getOverlapReadoutMode());
@@ -247,5 +252,16 @@ public class AndorImager extends VirtualDevice {
             return false;
         }
         return true;
+    }
+
+    public void setExposureTimeInSeconds(double exposureTimeInSeconds) {
+        this.exposureInSeconds = exposureTimeInSeconds;
+        if (lCamera != null ) {
+            try {
+                lCamera.setExposureTimeInSeconds(exposureTimeInSeconds);
+            } catch (AndorSdkJException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

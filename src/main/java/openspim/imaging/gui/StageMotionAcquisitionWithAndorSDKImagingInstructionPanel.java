@@ -25,5 +25,7 @@ public class StageMotionAcquisitionWithAndorSDKImagingInstructionPanel extends C
         addIntegerField(instruction.getSleepAtStartingPosition(), row++ );
         addIntegerField(instruction.getSleepBeforeImaging(), row++ );
 
+        addDoubleField(instruction.getExposureTimeInSeconds(), row++);
+
     }
 }

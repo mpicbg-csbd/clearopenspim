@@ -57,7 +57,9 @@ public class LinearPicardStage  extends VirtualDevice implements
 
     @Override
     public boolean moveBy(double pDistance, boolean pWaitToFinish) {
+        info("Old position: " + piStage.getPosition());
         piStage.setPosition((int) (piStage.getPosition() + pDistance / stepDistance));
+        info("New position: " + piStage.getPosition());
         // todo: wait until motion stopped
         return true;
     }
