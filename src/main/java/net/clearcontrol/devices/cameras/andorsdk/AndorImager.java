@@ -168,7 +168,7 @@ public class AndorImager extends VirtualDevice {
 
             int targetAdress = 0;
             for (int j = 0; j < bytes.length; j++) {
-                if ((j+1)%(imageWidth+1) != 0) {
+                if ((j+1)%(imageWidth*2+1) != 0) {
                     filteredBytes[targetAdress] = bytes[j];
                     targetAdress++;
                 }
