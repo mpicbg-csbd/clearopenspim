@@ -7,6 +7,8 @@ import clearcl.imagej.kernels.Kernels;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
+import clearcontrol.devices.lasers.LaserDeviceBase;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.devices.stages.BasicStageInterface;
 import clearcontrol.instructions.InstructionInterface;
 import clearcontrol.instructions.PropertyIOableInstructionInterface;
@@ -85,6 +87,12 @@ public class StageMotionAcquisitionInstruction extends LightSheetMicroscopeInstr
             return false;
         }
 
+        LaserDeviceInterface laserDevice = getLightSheetMicroscope().getDevice(LaserDeviceInterface.class, 0);
+        if (laserDevice != null) {
+            warning("No laser device detected!");
+        }
+        laserDevice.getTargetPowerInMilliWattVariable().set(1);
+
         double positionBefore = stageZ.getPositionVariable().get();
         double currentPosition = positionBefore;
 
@@ -111,7 +119,9 @@ public class StageMotionAcquisitionInstruction extends LightSheetMicroscopeInstr
                 stageZ.moveBy(sliceDistanceInMillimeters, true);
             }
             sleep(sleepBeforeImaging.get());
+            laserDevice.getLaserOnVariable().set(true);
             ClearCLImage planeImage = acquireSinglePlane(lightSheetPosition);
+            laserDevice.getLaserOnVariable().set(false);
 
             Kernels.copySlice(clij, planeImage, clStack, i);
 

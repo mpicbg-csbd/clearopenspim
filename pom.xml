@@ -8,13 +8,13 @@
 	<parent>
 		<groupId>net.clearcontrol</groupId>
 		<artifactId>ClearParentPom</artifactId>
-		<version>0.6.17</version>
+		<version>0.6.19</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>ClearOpenSPIM</artifactId>
-	<version>0.0.3-m</version>
+	<version>0.0.4-m</version>
 
 	<name>ClearOpenSPIM</name>
 	<description>ClearOpenSPIM</description>
@@ -33,24 +33,12 @@
 
 	<developers>
 		<developer>
-			<id>royer</id>
-			<name>Loic A. Royer</name>
-			<organization>CZ Biohub</organization>
-			<roles>
-				<role>founder</role>
-				<role>developer</role>
-				<role>debugger</role>
-				<role>reviewer</role>
-				<role>support</role>
-				<role>maintainer</role>
-			</roles>
-		</developer>
-		<developer>
 			<id>haesleinhuepf</id>
 			<name>Robert Haase</name>
 			<url>https://haesleinhuepf.net</url>
 			<organization>MPI CBG</organization>
 			<roles>
+				<role>founder</role>
 				<role>lead</role>
 				<role>developer</role>
 				<role>debugger</role>
@@ -62,7 +50,18 @@
 	</developers>
 	<contributors>
 		<contributor>
-			<name>none</name>
+			<name>Loic A. Royer</name>
+			<organization>CZ Biohub</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Alexandr Dibrov</name>
+			<organization>MPI CBG</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
 		</contributor>
 	</contributors>
 
