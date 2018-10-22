@@ -44,6 +44,7 @@ public class LinearPicardStage  extends VirtualDevice implements
         super.open();
 
         piStage = new PiUsbLinearStage(serial);
+        piStage.setDefaultVelocity(5);
         return true;
     }
 

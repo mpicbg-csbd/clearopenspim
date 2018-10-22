@@ -9,7 +9,6 @@ import clearcontrol.devices.cameras.devices.sim.StackCameraDeviceSimulator;
 import clearcontrol.devices.cameras.devices.sim.StackCameraSimulationProvider;
 import clearcontrol.devices.cameras.devices.sim.providers.FractalStackProvider;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
-import clearcontrol.devices.lasers.devices.sim.LaserDeviceSimulator;
 import clearcontrol.devices.lasers.instructions.*;
 import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
@@ -22,9 +21,10 @@ import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpti
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
+import net.clearcontrol.devices.lasers.coherent.obis.SingleCoherentObisLaserDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
 import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
-import openspim.imaging.StageMotionAcquisitionWithAndorSDKImagingInstruction;
+import openspim.imaging.stagemotionacquisition.StageMotionAcquisitionWithAndorSDKImagingInstruction;
 
 import java.util.ArrayList;
 
@@ -74,13 +74,14 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
 
     // Setting up lasers:
     //if (false)
-    {
+
       //final OmicronLaserDevice laser488 = new OmicronLaserDevice(0);
-      LaserDeviceInterface laser488 =
-              new LaserDeviceSimulator("Laser 488 sim",
-                      0,
-                      488,
-                      100);
+//      LaserDeviceInterface laser488 =
+//              new LaserDeviceSimulator("Laser 488 sim",
+//                      0,
+//                      488,
+//                      100);
+      LaserDeviceInterface laser488 = new SingleCoherentObisLaserDevice("COM3", 115200, 488);
 
       addDevice(0, laser488);
       addDevice(0, new SwitchLaserOnOffInstruction(laser488, true));
@@ -88,11 +89,13 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
       addDevice(0, new SwitchLaserPowerOnOffInstruction(laser488, true));
       addDevice(0, new SwitchLaserPowerOnOffInstruction(laser488, false));
       addDevice(0, new ChangeLaserPowerInstruction(laser488));
-    }
+
 
     // setting up cameras
     {
-      addDevice(0, new AndorImager(0));
+      AndorImager andorImager = new AndorImager(0);
+      andorImager.setLaserDevice(laser488);
+      addDevice(0, andorImager);
       addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));
     }
 

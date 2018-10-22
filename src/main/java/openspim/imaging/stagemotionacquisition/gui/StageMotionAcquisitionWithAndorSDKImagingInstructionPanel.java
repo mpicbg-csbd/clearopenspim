@@ -1,6 +1,7 @@
-package openspim.imaging.gui;
+package openspim.imaging.stagemotionacquisition.gui;
 
 import clearcontrol.gui.jfx.custom.gridpane.CustomGridPane;
+import clearcontrol.microscope.lightsheet.imaging.stagemotionacquisition.StageMotionAcquisitionInstruction;
 import openspim.imaging.stagemotionacquisition.StageMotionAcquisitionWithAndorSDKImagingInstruction;
 
 /**

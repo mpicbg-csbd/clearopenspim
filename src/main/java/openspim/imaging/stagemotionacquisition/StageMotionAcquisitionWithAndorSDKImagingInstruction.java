@@ -1,11 +1,10 @@
-package openspim.imaging;
+package openspim.imaging.stagemotionacquisition;
 
 import clearcl.ClearCLImage;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
-import clearcontrol.microscope.lightsheet.imaging.stagemotionacquisition.StageMotionAcquisitionInstruction;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
 
-public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageMotionAcquisitionInstruction {
+public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageMotionAcquisitionInstruction2 {
     /**
      * INstanciates a virtual device with a given name
      *

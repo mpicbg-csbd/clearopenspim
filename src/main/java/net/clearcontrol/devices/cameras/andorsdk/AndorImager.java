@@ -13,6 +13,7 @@ import clearcl.enums.ImageChannelDataType;
 import clearcl.imagej.ClearCLIJ;
 import clearcl.imagej.kernels.Kernels;
 import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
 
@@ -28,6 +29,9 @@ public class AndorImager extends VirtualDevice {
     int cameraIndex;
 
     ClearCLImage lastAcquiredImage = null;
+
+
+    LaserDeviceInterface laserDevice;
 
     int imageWidth = 2560;
     int imageHeight = 2160;
@@ -99,6 +103,13 @@ public class AndorImager extends VirtualDevice {
             return false;
         }
 
+        if (laserDevice != null) {
+            System.out.println("No laser device detected!");
+        }
+        //laserDevice.start();
+        laserDevice.getTargetPowerInMilliWattVariable().set(1);
+
+        laserDevice.getLaserOnVariable().set(true);
         try {
             lCamera.startAcquisition();
         } catch (Exception e) {
@@ -162,6 +173,7 @@ public class AndorImager extends VirtualDevice {
 
             System.out.println("Buffer received with " + lImageBuffer.getImageSizeInBytes() + " bytes");
 
+            laserDevice.getLaserOnVariable().set(false);
 
             ClearCLIJ clij = ClearCLIJ.getInstance();
             ClearCLImage clByteImage = clij.createCLImage(new long[]{imageWidth, imageHeight}, ImageChannelDataType.UnsignedInt16);
@@ -263,5 +275,9 @@ public class AndorImager extends VirtualDevice {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setLaserDevice(LaserDeviceInterface laserDevice) {
+        this.laserDevice = laserDevice;
     }
 }
