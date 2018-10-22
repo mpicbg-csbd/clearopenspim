@@ -135,6 +135,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
 
         // store the container in the warehouse
         StackInterface stack = clij.converter(clStack).getStack();
+        clStack.close();
 
         stack.setMetaData(new StackMetaData());
         stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, 1.0);
