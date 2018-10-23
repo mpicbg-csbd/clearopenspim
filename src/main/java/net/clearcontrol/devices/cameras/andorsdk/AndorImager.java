@@ -87,6 +87,7 @@ public class AndorImager extends VirtualDevice {
             lCamera.setTriggeringMode(TriggerMode.SOFTWARE);
             lCamera.setExposureTimeInSeconds(exposureInSeconds);
             lCamera.setCycleMode(CycleMode.CONTINUOUS);
+            // lCamera.setBinning(2);
 
             System.out.println("is overlap? - " + lCamera.getOverlapReadoutMode());
         } catch (Exception e) {
