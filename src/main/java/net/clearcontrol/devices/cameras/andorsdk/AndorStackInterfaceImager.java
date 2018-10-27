@@ -45,6 +45,7 @@ public class AndorStackInterfaceImager extends VirtualDevice implements ImagerIn
     double exposureInSeconds = 0.1;
     int binning = 1;
     private ContiguousMemoryInterface memoryInterface;
+    private double pixelSizeInMicrons;
 
     public AndorStackInterfaceImager(int cameraIndex) {
         super("Andor stack imager");
@@ -247,5 +248,14 @@ public class AndorStackInterfaceImager extends VirtualDevice implements ImagerIn
 
     public void setLaserTriggerOnVariable(Variable<Boolean> laserTrigger) {
         this.laserTrigger = laserTrigger;
+    }
+
+
+    public double getPixelSizeInMicrons() {
+        return pixelSizeInMicrons;
+    }
+
+    public void setPixelSizeInMicrons(double pixelSizeInMicrons) {
+        this.pixelSizeInMicrons = pixelSizeInMicrons;
     }
 }

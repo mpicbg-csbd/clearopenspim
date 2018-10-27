@@ -2,6 +2,7 @@ package net.clearcontrol.devices.cameras.simulation;
 
 import clearcl.imagej.ClearCLIJ;
 import clearcontrol.core.device.VirtualDevice;
+import clearcontrol.devices.imagej.ImageJFeature;
 import clearcontrol.stack.StackInterface;
 import coremem.ContiguousMemoryInterface;
 import ij.IJ;
@@ -28,7 +29,7 @@ public class SimulatedImager extends VirtualDevice implements ImagerInterface {
      */
     public SimulatedImager() {
         super("Simulated Imager");
-        imp = IJ.openImage("src/main/resource/simdata.tif");
+        imp = IJ.openImage("src/main/resources/simdata.tif");
     }
 
     @Override
@@ -66,6 +67,11 @@ public class SimulatedImager extends VirtualDevice implements ImagerInterface {
         this.memoryInterface = memoryInterface;
 
 
+    }
+
+    @Override
+    public double getPixelSizeInMicrons() {
+        return 0.26;
     }
 
     @Override

@@ -27,6 +27,7 @@ import net.clearcontrol.devices.cameras.simulation.SimulatedImager;
 import net.clearcontrol.devices.lasers.coherent.obis.SingleCoherentObisLaserDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
 import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
+import net.imagej.patcher.LegacyInjector;
 import openspim.imaging.stagemotion.StageMotionImagingInstruction;
 import openspim.imaging.stagemotionacquisition.StageMotionAcquisitionWithAndorSDKImagingInstruction;
 
@@ -39,7 +40,9 @@ import java.util.ArrayList;
  */
 public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
 {
-
+  static {
+    LegacyInjector.preinit();
+  }
   /**
    * Instantiates an OpenSPIM microscope
    * 
@@ -99,6 +102,7 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
     if (false)
     {
       AndorImager andorImager = new AndorImager(0);
+      andorImager.setPixelSizeInMicrons(0.26);
       andorImager.setLaserDevice(laser488);
       addDevice(0, andorImager);
       addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));
@@ -106,6 +110,7 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
 
     {
       AndorStackInterfaceImager andorImager = new AndorStackInterfaceImager(0);
+      andorImager.setPixelSizeInMicrons(0.26);
       andorImager.setLaserTriggerOnVariable(laser488.getLaserOnVariable());
       addDevice(0, andorImager);
       addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));

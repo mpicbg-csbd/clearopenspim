@@ -256,7 +256,11 @@ public class OpenSPIMMain extends Application implements LoggingFeature
       openSpimMicroscope.getTimelapse().getCurrentProgram().clear();
       File file = new File("C:\\Users\\openspim\\.clearcontrol\\ProgramTemplates\\open_spim_with_andor.txt");
       ScheduleReader reader = new ScheduleReader(openSpimMicroscope.getTimelapse().getCurrentProgram(), openSpimMicroscope, file);
-      reader.read();
+      if (!reader.read()) {
+        file = new File("C:\\Users\\rhaase\\.clearcontrol\\ProgramTemplates\\open_spim_simulated.txt");
+        reader = new ScheduleReader(openSpimMicroscope.getTimelapse().getCurrentProgram(), openSpimMicroscope, file);
+        reader.read();
+      }
       // -------------------------------------------------------------------
 
       info("Opening microscope devices...");

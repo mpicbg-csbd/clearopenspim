@@ -28,5 +28,7 @@ public interface ImagerInterface {
 
     void setMemoryInterface(ContiguousMemoryInterface memoryInterface);
 
+    public double getPixelSizeInMicrons();
+
     boolean acquire();
 }

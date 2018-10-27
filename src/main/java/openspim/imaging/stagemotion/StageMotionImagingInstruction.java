@@ -85,8 +85,6 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
             return false;
         }
 
-
-
         double positionBefore = stageZ.getPositionVariable().get();
         double currentPosition = positionBefore;
 
@@ -113,10 +111,6 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
                 lStackRecyclerManager.getRecycler("warehouse",
                         1024,
                         1024);
-
-        Variable<StackInterface> lStackCopyVariable =
-                new Variable<StackInterface>("stackcopy",
-                        null);
 
         StackInterface stack = lRecycler.getOrWait(1000,
                             TimeUnit.SECONDS,
@@ -145,6 +139,8 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
                 }
             }
             imager.disconnect();
+        } else {
+            warning("Couldn't connect to imager!");
         }
 
         currentPosition = stageZ.getPositionVariable().get();
@@ -160,9 +156,9 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
         // store the container in the warehouse
 
         stack.setMetaData(new StackMetaData());
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, 1.0);
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimY, 1.0);
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimZ, sliceDistanceInMillimeters);
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, imager.getPixelSizeInMicrons());
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimY, imager.getPixelSizeInMicrons());
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimZ, sliceDistanceInMillimeters * 1000);
         stack.getMetaData().addEntry(Channel, "C0L0");
         stack.getMetaData().setTimeStampInNanoseconds(acquisitionRequestTime);
 
@@ -185,8 +181,19 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
     }
 
     @Override
-    public StageMotionAcquisitionInstruction2 copy() {
-        return new StageMotionAcquisitionInstruction2(getLightSheetMicroscope());
+    public StageMotionImagingInstruction copy() {
+        StageMotionImagingInstruction stageMotionImagingInstruction = new StageMotionImagingInstruction(getLightSheetMicroscope(), stageZ, imager);
+
+        stageMotionImagingInstruction.binning.set(binning.get());
+        stageMotionImagingInstruction.imageHeight.set(imageHeight.get());
+        stageMotionImagingInstruction.imageWidth.set(imageWidth.get());
+        stageMotionImagingInstruction.numberOfSlices.set(numberOfSlices.get());
+        stageMotionImagingInstruction.exposureTimeInSeconds.set(exposureTimeInSeconds.get());
+        stageMotionImagingInstruction.sleepAtStartingPosition.set(sleepAtStartingPosition.get());
+        stageMotionImagingInstruction.sleepBeforeImaging.set(sleepBeforeImaging.get());
+        stageMotionImagingInstruction.sliceDistance.set(sliceDistance.get());
+
+        return stageMotionImagingInstruction;
     }
 
     public BoundedVariable<Double> getSliceDistance() {
@@ -217,6 +224,10 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
         return exposureTimeInSeconds;
     }
 
+    public BoundedVariable<Integer> getBinning() {
+        return binning;
+    }
+
     @Override
     public Variable[] getProperties() {
         return new Variable[] {
@@ -226,7 +237,8 @@ public class StageMotionImagingInstruction extends LightSheetMicroscopeInstructi
                 getSleepAtStartingPosition(),
                 getSleepBeforeImaging(),
                 getSliceDistance(),
-                getExposureTimeInSeconds()
+                getExposureTimeInSeconds(),
+                getBinning()
         };
     }
 }

@@ -37,6 +37,8 @@ public class AndorImager extends VirtualDevice {
     int imageHeight = 2160;
     double exposureInSeconds = 0.1;
 
+    double pixelSizeInMicrons = 0.26;
+
     public AndorImager(int cameraIndex) {
         super("Andor imager");
         this.cameraIndex = cameraIndex;
@@ -280,5 +282,13 @@ public class AndorImager extends VirtualDevice {
 
     public void setLaserDevice(LaserDeviceInterface laserDevice) {
         this.laserDevice = laserDevice;
+    }
+
+    public double getPixelSizeInMicrons() {
+        return pixelSizeInMicrons;
+    }
+
+    public void setPixelSizeInMicrons(double pixelSizeInMicrons) {
+        this.pixelSizeInMicrons = pixelSizeInMicrons;
     }
 }
