@@ -12,6 +12,7 @@ import openspim.imaging.stagemotionacquisition.StageMotionAcquisitionWithAndorSD
  * Author: @haesleinhuepf
  * 09 2018
  */
+@Deprecated
 public class StageMotionAcquisitionWithAndorSDKImagingInstructionPanel extends CustomGridPane {
     public StageMotionAcquisitionWithAndorSDKImagingInstructionPanel(StageMotionAcquisitionWithAndorSDKImagingInstruction instruction) {
 

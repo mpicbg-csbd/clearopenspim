@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
+@Deprecated
 public class BasicStagePanel extends CustomGridPane {
     public BasicStagePanel(BasicStageInterface stage) {
         int lRow = 0;

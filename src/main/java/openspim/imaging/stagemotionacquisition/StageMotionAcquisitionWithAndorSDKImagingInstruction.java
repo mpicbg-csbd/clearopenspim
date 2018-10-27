@@ -4,6 +4,7 @@ import clearcl.ClearCLImage;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
 
+@Deprecated
 public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageMotionAcquisitionInstruction2 {
     /**
      * INstanciates a virtual device with a given name

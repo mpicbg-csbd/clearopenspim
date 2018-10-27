@@ -14,6 +14,7 @@ import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
+import clearcontrol.devices.stages.kcube.sim.SimulatedBasicStageDevice;
 import clearcontrol.microscope.lightsheet.DefaultLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
@@ -21,9 +22,12 @@ import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpti
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
+import net.clearcontrol.devices.cameras.andorsdk.AndorStackInterfaceImager;
+import net.clearcontrol.devices.cameras.simulation.SimulatedImager;
 import net.clearcontrol.devices.lasers.coherent.obis.SingleCoherentObisLaserDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
 import net.clearcontrol.devices.stages.picard.TwisterPicardStage;
+import openspim.imaging.stagemotion.StageMotionImagingInstruction;
 import openspim.imaging.stagemotionacquisition.StageMotionAcquisitionWithAndorSDKImagingInstruction;
 
 import java.util.ArrayList;
@@ -92,9 +96,17 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
 
 
     // setting up cameras
+    if (false)
     {
       AndorImager andorImager = new AndorImager(0);
       andorImager.setLaserDevice(laser488);
+      addDevice(0, andorImager);
+      addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));
+    }
+
+    {
+      AndorStackInterfaceImager andorImager = new AndorStackInterfaceImager(0);
+      andorImager.setLaserTriggerOnVariable(laser488.getLaserOnVariable());
       addDevice(0, andorImager);
       addDevice(0, new StageMotionAcquisitionWithAndorSDKImagingInstruction(this));
     }
@@ -347,6 +359,11 @@ public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
                                   LightSheetMicroscopeSimulationDevice simulatorDevice)
   {
     super.addSimulatedDevices(dummySimulation, hasXYZRStage, hasSharedLightSheetControl, simulatorDevice);
+
+    SimulatedImager simulatedImager = new SimulatedImager();
+    addDevice(0, simulatedImager);
+
+    addDevice(0, new StageMotionImagingInstruction(this, getDevice(SimulatedBasicStageDevice.class, 0), simulatedImager));
   }
 
   @Override

@@ -29,6 +29,7 @@ import static clearcontrol.stack.metadata.MetaDataChannel.Channel;
  * Author: @haesleinhuepf
  * 09 2018
  */
+@Deprecated
 public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInstructionBase implements LoggingFeature, PropertyIOableInstructionInterface {
 
     BoundedVariable<Integer> sleepAtStartingPosition = new BoundedVariable<Integer>("Sleep at start position in ms", 0, 0, Integer.MAX_VALUE);
