@@ -116,7 +116,7 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
             return false;
         }
 
-        String powert = String.format("%4.6f", value);
+        String powert = String.format("%4.5f", value);
         String result = setLaserProperty(POWER_PROPERTY_TOKEN, powert);
         return powert.compareTo(result) == 0;
 

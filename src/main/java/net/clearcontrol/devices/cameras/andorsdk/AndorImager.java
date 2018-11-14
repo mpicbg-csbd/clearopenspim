@@ -108,7 +108,7 @@ public class AndorImager extends VirtualDevice {
             System.out.println("No laser device detected!");
         }
         //laserDevice.start();
-        laserDevice.getTargetPowerInMilliWattVariable().set(1);
+        laserDevice.getTargetPowerInMilliWattVariable().set(0.01);
 
         laserDevice.getLaserOnVariable().set(true);
         try {
@@ -235,7 +235,7 @@ public class AndorImager extends VirtualDevice {
 
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
