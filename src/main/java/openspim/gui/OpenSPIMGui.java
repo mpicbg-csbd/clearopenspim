@@ -1,7 +1,7 @@
 package openspim.gui;
 
-import clearcontrol.microscope.lightsheet.DefaultLightSheetMicroscopeGUI;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
+import clearcontrol.microscope.lightsheet.gui.LightSheetMicroscopeGUI;
 import javafx.stage.Stage;
 
 /**
@@ -9,7 +9,7 @@ import javafx.stage.Stage;
  *
  * @author haesleinhuepf
  */
-public class OpenSPIMGui extends DefaultLightSheetMicroscopeGUI
+public class OpenSPIMGui extends LightSheetMicroscopeGUI
 {
 
   /**

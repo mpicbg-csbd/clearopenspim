@@ -1,9 +1,5 @@
 package openspim.imaging.stagemotionacquisition;
 
-import clearcl.ClearCLImage;
-import clearcl.enums.ImageChannelDataType;
-import clearcl.imagej.ClearCLIJ;
-import clearcl.imagej.kernels.Kernels;
 import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -18,6 +14,10 @@ import clearcontrol.microscope.lightsheet.warehouse.containers.StackInterfaceCon
 import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.MetaDataVoxelDim;
 import clearcontrol.stack.metadata.StackMetaData;
+import net.haesleinhuepf.clij.CLIJ;
+import net.haesleinhuepf.clij.clearcl.ClearCLImage;
+import net.haesleinhuepf.clij.clearcl.enums.ImageChannelDataType;
+import net.haesleinhuepf.clij.kernels.Kernels;
 
 import static clearcontrol.stack.metadata.MetaDataChannel.Channel;
 
@@ -42,7 +42,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
 
     BoundedVariable<Double> exposureTimeInSeconds = new BoundedVariable<Double>("Exposure time in seconds", 0.5, 0.001, Double.MAX_VALUE, 0.0001);
 
-    ClearCLIJ clij = ClearCLIJ.getInstance();
+    CLIJ clij = CLIJ.getInstance();
 
     BasicStageInterface stageZ = null;
 
@@ -62,7 +62,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
 
     @Override
     public boolean initialize() {
-        clij = ClearCLIJ.getInstance();
+        clij = CLIJ.getInstance();
 
         stageZ = null;
 
@@ -134,7 +134,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         };
 
         // store the container in the warehouse
-        StackInterface stack = clij.converter(clStack).getStack();
+        StackInterface stack = clij.convert(clStack, StackInterface.class);
         clStack.close();
 
         stack.setMetaData(new StackMetaData());
@@ -163,10 +163,10 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         imager.setDetectionArmIndex(0);
 
         // acquire an image
-        StackInterface acquiredImageStack = imager.acquire();
+        StackInterface acquiredImageStack = imager.acquireStack();
 
         // convert and return
-        ClearCLImage clImage = clij.converter(acquiredImageStack).getClearCLImage();
+        ClearCLImage clImage = clij.convert(acquiredImageStack, ClearCLImage.class);
         ClearCLImage sliceImage = clij.createCLImage(new long[] {clImage.getWidth(), clImage.getHeight()}, clImage.getChannelDataType());
         Kernels.copySlice(clij, clImage, sliceImage, 0);
         clImage.close();
@@ -188,6 +188,11 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
     @Override
     public StageMotionAcquisitionInstruction2 copy() {
         return new StageMotionAcquisitionInstruction2(getLightSheetMicroscope());
+    }
+
+    @Override
+    public String getDescription() {
+        return "Acquire a stack while moving the stage in Z from plane to plane.";
     }
 
     public BoundedVariable<Double> getSliceDistance() {
@@ -229,5 +234,15 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
                 getSliceDistance(),
                 getExposureTimeInSeconds()
         };
+    }
+
+    @Override
+    public Class[] getProducedContainerClasses() {
+        return new Class[]{StackInterfaceContainer.class};
+    }
+
+    @Override
+    public Class[] getConsumedContainerClasses() {
+        return new Class[0];
     }
 }

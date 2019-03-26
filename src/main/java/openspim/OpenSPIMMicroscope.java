@@ -14,12 +14,12 @@ import clearcontrol.devices.signalamp.ScalingAmplifierDeviceInterface;
 import clearcontrol.devices.signalamp.devices.sim.ScalingAmplifierSimulator;
 import clearcontrol.devices.signalgen.devices.nirio.NIRIOSignalGenerator;
 import clearcontrol.devices.signalgen.devices.sim.SignalGeneratorSimulatorDevice;
-import clearcontrol.microscope.lightsheet.DefaultLightSheetMicroscope;
 import clearcontrol.microscope.lightsheet.component.detection.DetectionArm;
 import clearcontrol.microscope.lightsheet.component.lightsheet.LightSheet;
 import clearcontrol.microscope.lightsheet.component.opticalswitch.LightSheetOpticalSwitch;
 import clearcontrol.microscope.lightsheet.signalgen.LightSheetSignalGeneratorDevice;
 import clearcontrol.microscope.lightsheet.simulation.LightSheetMicroscopeSimulationDevice;
+import clearcontrol.microscope.lightsheet.simulation.SimulatedLightSheetMicroscope;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
 import net.clearcontrol.devices.lasers.coherent.obis.SingleCoherentObisLaserDevice;
 import net.clearcontrol.devices.stages.picard.LinearPicardStage;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
  *
  * @author haesleinhuepf
  */
-public class OpenSPIMMicroscope extends DefaultLightSheetMicroscope
+public class OpenSPIMMicroscope extends SimulatedLightSheetMicroscope
 {
 
   /**

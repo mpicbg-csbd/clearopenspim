@@ -8,17 +8,17 @@
 	<parent>
 		<groupId>net.clearcontrol</groupId>
 		<artifactId>ClearParentPom</artifactId>
-		<version>0.6.19</version>
+		<version>0.9.0</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>ClearOpenSPIM</artifactId>
-	<version>0.0.4-m</version>
+	<version>0.1.0-m</version>
 
 	<name>ClearOpenSPIM</name>
 	<description>ClearOpenSPIM</description>
-	<url>https://github.com/ClearControl/ClearControl</url>
+	<url>https://github.com/ClearControl/ClearOpenSPIM</url>
 	<inceptionYear>2018</inceptionYear>
 	<organization>
 		<name>ClearControl</name>
@@ -87,7 +87,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.clearcontrol</groupId>
-			<artifactId>clearcontrol-lightsheet-csbd</artifactId>
+			<artifactId>clearcontrol-lightsheet</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.clearcontrol</groupId>
