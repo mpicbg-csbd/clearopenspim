@@ -1,8 +1,8 @@
 package openspim.imaging.stagemotionacquisition;
 
-import clearcl.ClearCLImage;
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
+import net.haesleinhuepf.clij.clearcl.ClearCLImage;
 
 public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageMotionAcquisitionInstruction2 {
     /**

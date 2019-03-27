@@ -8,14 +8,13 @@ import andorsdkj.enums.CycleMode;
 import andorsdkj.enums.ReadOutRate;
 import andorsdkj.enums.TriggerMode;
 import andorsdkj.util.Buffer16ToArray;
-import clearcl.ClearCLImage;
-import clearcl.enums.ImageChannelDataType;
-import clearcl.imagej.ClearCLIJ;
-import clearcl.imagej.kernels.Kernels;
 import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
+import net.haesleinhuepf.clij.CLIJ;
+import net.haesleinhuepf.clij.clearcl.ClearCLImage;
+import net.haesleinhuepf.clij.clearcl.enums.ImageChannelDataType;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
@@ -176,7 +175,7 @@ public class AndorImager extends VirtualDevice {
 
             laserDevice.getLaserOnVariable().set(false);
 
-            ClearCLIJ clij = ClearCLIJ.getInstance();
+            CLIJ clij = CLIJ.getInstance();
             ClearCLImage clByteImage = clij.createCLImage(new long[]{imageWidth, imageHeight}, ImageChannelDataType.UnsignedInt16);
 
             byte[] bytes = lImageBuffer.getPointer().getBytes(lImageBuffer.getImageSizeInBytes());

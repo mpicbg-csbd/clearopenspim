@@ -2,6 +2,7 @@ package net.clearcontrol.devices.lasers.coherent.obis;
 
 import clearcontrol.com.serial.Serial;
 import clearcontrol.com.serial.SerialDevice;
+import clearcontrol.core.log.LoggingFeature;
 import clearcontrol.core.variable.Variable;
 import clearcontrol.core.variable.VariableSetListener;
 import clearcontrol.core.variable.bounded.BoundedVariable;
@@ -23,7 +24,7 @@ import jssc.SerialPortException;
  * Author: @haesleinhuepf
  * 09 2018
  */
-public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements LaserDeviceInterface {
+public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements LaserDeviceInterface, LoggingFeature {
     final static String POWER_PROPERTY_TOKEN = ("SOUR1:POW:LEV:IMM:AMPL");
 
     final static String LASER_ON_TOKEN = ("SOUR1:AM:STATE");
@@ -59,8 +60,18 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
             }
         });
 
+        super.mCurrentPowerInMilliWattVariable = new BoundedVariable<Number>("Power", 0.0,0.0, Double.MAX_VALUE);
+        mCurrentPowerInMilliWattVariable.addSetListener(new VariableSetListener<Number>() {
+            @Override
+            public void setEvent(Number pCurrentValue, Number pNewValue) {
+                info("Laser power is not " + pNewValue.doubleValue());
+            }
+        });
+
         super.mWavelengthVariable = new BoundedVariable<Integer>("Wavelength in nm", wavelength, 0, Integer.MAX_VALUE);
         //mSerialDevice = new SerialDevice("Serial laser " + getName(), serialPort, baudRate);
+
+        mMaxPowerInMilliWattVariable = new Variable<Number>("Max laser power", 60.0);
     }
 
     @Override

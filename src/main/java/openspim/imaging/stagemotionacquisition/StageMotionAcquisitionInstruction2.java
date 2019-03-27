@@ -190,11 +190,6 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         return new StageMotionAcquisitionInstruction2(getLightSheetMicroscope());
     }
 
-    @Override
-    public String getDescription() {
-        return "Acquire a stack while moving the stage in Z from plane to plane.";
-    }
-
     public BoundedVariable<Double> getSliceDistance() {
         return sliceDistance;
     }
@@ -236,13 +231,4 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         };
     }
 
-    @Override
-    public Class[] getProducedContainerClasses() {
-        return new Class[]{StackInterfaceContainer.class};
-    }
-
-    @Override
-    public Class[] getConsumedContainerClasses() {
-        return new Class[0];
-    }
 }
