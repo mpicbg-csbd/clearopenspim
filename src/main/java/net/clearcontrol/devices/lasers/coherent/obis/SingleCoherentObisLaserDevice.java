@@ -127,7 +127,7 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
             return false;
         }
 
-        String powert = String.format("%4.5f", value);
+        String powert = String.format("%4.5f", value / 100);
         String result = setLaserProperty(POWER_PROPERTY_TOKEN, powert);
         return powert.compareTo(result) == 0;
 
@@ -146,32 +146,33 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
     // --------------------------------------------
     // low level API
 
+    private Object lock = new Object();
     private String send(String message) {
         SerialPort serialPort = new SerialPort("COM3");
-        try {
-            serialPort.openPort();//Open serial port
-            serialPort.setParams(SerialPort.BAUDRATE_115200,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
-            serialPort.writeBytes((message + "\r").getBytes());//Write data to port
-            System.out.print(message.replace('\r', ' ').trim() + " --> ");
+        synchronized (lock ) {
+            try {
+                serialPort.openPort();//Open serial port
+                serialPort.setParams(SerialPort.BAUDRATE_115200,
+                        SerialPort.DATABITS_8,
+                        SerialPort.STOPBITS_1,
+                        SerialPort.PARITY_NONE);//Set params. Also you can set params by this string: serialPort.setParams(9600, 8, 1, 0);
+                serialPort.writeBytes((message + "\r").getBytes());//Write data to port
+                System.out.print(message.replace('\r', ' ').trim() + " --> ");
 
-            StringBuilder b = new StringBuilder();
-            byte last;
-            do {
-                String ret = serialPort.readString(1);
-                b.append(ret);
-                last = ret.getBytes()[0];
-            } while(last != '\n');
-            System.out.println(b.toString().trim());
-            serialPort.closePort();//Close serial port
-            return b.toString();
-        }
-        catch (SerialPortException ex) {
-            System.out.println(ex);
-            return null;
-        }
+                StringBuilder b = new StringBuilder();
+                byte last;
+                do {
+                    String ret = serialPort.readString(1);
+                    b.append(ret);
+                    last = ret.getBytes()[0];
+                } while (last != '\n');
+                System.out.println(b.toString().trim());
+                serialPort.closePort();//Close serial port
+                return b.toString();
+            } catch (SerialPortException ex) {
+                System.out.println(ex);
+                return null;
+            }
         /*
         try
         {
@@ -187,6 +188,7 @@ public class SingleCoherentObisLaserDevice extends LaserDeviceBase implements La
             e.printStackTrace();
             return null;
         }*/
+        }
     }
 
     private String setLaserProperty(String property, String value) {
