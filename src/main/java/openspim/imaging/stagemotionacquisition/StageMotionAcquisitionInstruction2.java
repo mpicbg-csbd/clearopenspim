@@ -113,10 +113,10 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
             }
             sleep(sleepBeforeImaging.get());
             ClearCLImage planeImage = acquireSinglePlane(lightSheetPosition);
-
-            Kernels.copySlice(clij, planeImage, clStack, i);
-
-            planeImage.close();
+            if (planeImage != null) {
+                Kernels.copySlice(clij, planeImage, clStack, i);
+                planeImage.close();
+            }
 
             if (getLightSheetMicroscope().getTimelapse().getStopSignalVariable().get()) {
                 break;
@@ -138,9 +138,9 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         clStack.close();
 
         stack.setMetaData(new StackMetaData());
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, 1.0);
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimY, 1.0);
-        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimZ, sliceDistanceInMillimeters);
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, 0.325);
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimY, 0.325);
+        stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimZ, sliceDistanceInMillimeters * 1000);
         stack.getMetaData().addEntry(Channel, "C0L0");
         stack.getMetaData().setTimeStampInNanoseconds(acquisitionRequestTime);
 
