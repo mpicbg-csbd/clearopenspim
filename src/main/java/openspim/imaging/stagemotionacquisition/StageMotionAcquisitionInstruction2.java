@@ -15,8 +15,10 @@ import clearcontrol.stack.StackInterface;
 import clearcontrol.stack.metadata.MetaDataVoxelDim;
 import clearcontrol.stack.metadata.StackMetaData;
 import net.haesleinhuepf.clij.CLIJ;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij.clearcl.ClearCLImage;
 import net.haesleinhuepf.clij.clearcl.enums.ImageChannelDataType;
+import net.haesleinhuepf.clij.coremem.enums.NativeTypeEnum;
 import net.haesleinhuepf.clij.kernels.Kernels;
 
 import static clearcontrol.stack.metadata.MetaDataChannel.Channel;
@@ -103,7 +105,8 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         stageZ.moveBy(startZ - positionBefore, true);
         sleep(sleepAtStartingPosition.get());
 
-        ClearCLImage clStack = clij.createCLImage(new long[]{imageWidth.get(), imageHeight.get().longValue(), numberOfImagesToTake}, ImageChannelDataType.UnsignedInt16);
+        ClearCLBuffer clStack = clij.create(new long[]{imageWidth.get(), imageHeight.get().longValue(), numberOfImagesToTake}, NativeTypeEnum.UnsignedShort);
+        warning("OPEN stack");
 
         long acquisitionRequestTime = System.nanoTime();
         for (int i = 0; i < numberOfImagesToTake; i++) {
@@ -112,10 +115,12 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
                 stageZ.moveBy(sliceDistanceInMillimeters, true);
             }
             sleep(sleepBeforeImaging.get());
-            ClearCLImage planeImage = acquireSinglePlane(lightSheetPosition);
+            warning("OPEN slice");
+            ClearCLBuffer planeImage = acquireSinglePlane(lightSheetPosition);
             if (planeImage != null) {
                 Kernels.copySlice(clij, planeImage, clStack, i);
                 planeImage.close();
+                warning("CLOSE slice");
             }
 
             if (getLightSheetMicroscope().getTimelapse().getStopSignalVariable().get()) {
@@ -136,6 +141,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         // store the container in the warehouse
         StackInterface stack = clij.convert(clStack, StackInterface.class);
         clStack.close();
+        warning("CLOSE stack");
 
         stack.setMetaData(new StackMetaData());
         stack.getMetaData().addEntry(MetaDataVoxelDim.VoxelDimX, 0.325);
@@ -151,7 +157,7 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         return true;
     }
 
-    protected ClearCLImage acquireSinglePlane(double z) {
+    protected ClearCLBuffer acquireSinglePlane(double z) {
 
 
         SingleViewPlaneImager imager =
@@ -166,8 +172,8 @@ public class StageMotionAcquisitionInstruction2 extends LightSheetMicroscopeInst
         StackInterface acquiredImageStack = imager.acquireStack();
 
         // convert and return
-        ClearCLImage clImage = clij.convert(acquiredImageStack, ClearCLImage.class);
-        ClearCLImage sliceImage = clij.createCLImage(new long[] {clImage.getWidth(), clImage.getHeight()}, clImage.getChannelDataType());
+        ClearCLBuffer clImage = clij.convert(acquiredImageStack, ClearCLBuffer.class);
+        ClearCLBuffer sliceImage = clij.create(new long[] {clImage.getWidth(), clImage.getHeight()}, clImage.getNativeType());
         Kernels.copySlice(clij, clImage, sliceImage, 0);
         clImage.close();
 

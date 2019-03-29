@@ -12,9 +12,12 @@ import clearcontrol.core.device.VirtualDevice;
 import clearcontrol.devices.lasers.LaserDeviceInterface;
 import clearcontrol.stack.OffHeapPlanarStack;
 import clearcontrol.stack.StackInterface;
+import groovy.json.internal.Byt;
 import net.haesleinhuepf.clij.CLIJ;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij.clearcl.ClearCLImage;
 import net.haesleinhuepf.clij.clearcl.enums.ImageChannelDataType;
+import net.haesleinhuepf.clij.coremem.enums.NativeTypeEnum;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Future;
@@ -27,7 +30,9 @@ public class AndorImager extends VirtualDevice {
     AndorCamera lCamera;
     int cameraIndex;
 
-    ClearCLImage lastAcquiredImage = null;
+    ClearCLBuffer lastAcquiredImage = null;
+
+    Future<?> f = null;
 
 
     LaserDeviceInterface laserDevice;
@@ -64,7 +69,7 @@ public class AndorImager extends VirtualDevice {
         return super.close();
     }
 
-    public ClearCLImage acquire() {
+    public ClearCLBuffer acquire() {
         lastAcquiredImage = null;
         //open();
         image();
@@ -124,7 +129,7 @@ public class AndorImager extends VirtualDevice {
         double t11;
 
 
-        Future<?> f = lExecutor.scheduleAtFixedRate(() -> {
+        f = lExecutor.scheduleAtFixedRate(() -> {
             try {
 
 
@@ -154,6 +159,7 @@ public class AndorImager extends VirtualDevice {
             ImageBuffer lImageBuffer = null;
             try {
                 lImageBuffer = lCamera.waitForBuffer(10, TimeUnit.SECONDS);
+                f.cancel(false);
             } catch (AndorSdkJException e) {
                 e.printStackTrace();
                 f.cancel(false);
@@ -169,7 +175,6 @@ public class AndorImager extends VirtualDevice {
                 lCamera.enqueueBuffer(lImageBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
-                f.cancel(false);
                 return false;
             }
 
@@ -178,7 +183,7 @@ public class AndorImager extends VirtualDevice {
             laserDevice.getLaserOnVariable().set(false);
 
             CLIJ clij = CLIJ.getInstance();
-            ClearCLImage clByteImage = clij.createCLImage(new long[]{imageWidth, imageHeight}, ImageChannelDataType.UnsignedInt16);
+            ClearCLBuffer clByteImage = clij.createCLBuffer(new long[]{imageWidth, imageHeight}, NativeTypeEnum.UnsignedShort);
 
             byte[] bytes = lImageBuffer.getPointer().getBytes(lImageBuffer.getImageSizeInBytes());
 
@@ -198,7 +203,9 @@ public class AndorImager extends VirtualDevice {
             System.out.println("bytes    :  " + bytes.length);
             System.out.println("filtere  :  " + filteredBytes.length);
 
-            clByteImage.readFrom(filteredBytes, true);
+            ByteBuffer byteBuffer = ByteBuffer.wrap(filteredBytes);
+
+            clByteImage.readFrom(byteBuffer, true);
 
             lastAcquiredImage = clByteImage;
 
@@ -232,8 +239,6 @@ public class AndorImager extends VirtualDevice {
 
 
         double t2 = System.nanoTime();
-        f.cancel(false);
-
 
         try {
             Thread.sleep(100);

@@ -2,6 +2,7 @@ package openspim.imaging.stagemotionacquisition;
 
 import clearcontrol.microscope.lightsheet.LightSheetMicroscope;
 import net.clearcontrol.devices.cameras.andorsdk.AndorImager;
+import net.haesleinhuepf.clij.clearcl.ClearCLBuffer;
 import net.haesleinhuepf.clij.clearcl.ClearCLImage;
 
 public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageMotionAcquisitionInstruction2 {
@@ -15,7 +16,7 @@ public class StageMotionAcquisitionWithAndorSDKImagingInstruction extends StageM
     }
 
     @Override
-    protected ClearCLImage acquireSinglePlane(double z) {
+    protected ClearCLBuffer acquireSinglePlane(double z) {
         AndorImager imager = getLightSheetMicroscope().getDevice(AndorImager.class, 0);
         imager.setExposureTimeInSeconds(getExposureTimeInSeconds().get());
         return imager.acquire();
