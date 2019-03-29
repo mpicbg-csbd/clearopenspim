@@ -156,6 +156,7 @@ public class AndorImager extends VirtualDevice {
                 lImageBuffer = lCamera.waitForBuffer(10, TimeUnit.SECONDS);
             } catch (AndorSdkJException e) {
                 e.printStackTrace();
+                f.cancel(false);
                 return false;
             }
 
@@ -168,6 +169,7 @@ public class AndorImager extends VirtualDevice {
                 lCamera.enqueueBuffer(lImageBuffer);
             } catch (Exception e) {
                 e.printStackTrace();
+                f.cancel(false);
                 return false;
             }
 
